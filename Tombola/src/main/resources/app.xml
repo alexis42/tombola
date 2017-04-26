@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+
+	<bean id="personneDao" class="com.adaming.mytombola.daoImpl.PersonneDaoImpl"></bean>
+	<bean id="personneService" class="com.adaming.mytombola.serviceImpl.PersonneServiceImpl">
+		<property name="daoPersonne" ref="personneDao"></property>
+	</bean>
+
+	<bean id="lotDao" class="com.adaming.mytombola.daoImpl.LotDaoImpl"></bean>
+	<bean id="lotService" class="com.adaming.mytombola.serviceImpl.LotServiceImpl">
+		<property name="daoLot" ref="lotDao"></property>
+	</bean>
+
+	<bean id="ticketDao" class="com.adaming.mytombola.daoImpl.TicketDaoImpl"></bean>
+	<bean id="ticketService" class="com.adaming.mytombola.serviceImpl.TicketServiceImpl">
+		<property name="daoTicket" ref="ticketDao"></property>
+	</bean>
+
+	<bean id="datasource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost/tombola"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value=""></property>
+	</bean>
+	<bean id="PersistenceUnitManager"
+		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+		<property name="defaultDataSource" ref="datasource"></property>
+		<property name="persistenceXmlLocations">
+			<list>
+				<value>classpath*:META-INF/persistence.xml</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="EntityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitManager" ref="PersistenceUnitManager"></property>
+		<property name="persistenceUnitName" value="UP_JPA"></property>
+	</bean>
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="EntityManagerFactory"></property>
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<context:annotation-config></context:annotation-config>
+
+
+</beans>
